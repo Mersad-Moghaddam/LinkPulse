@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>LinkPulse Dashboard</title>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <style>body{font-family:sans-serif;max-width:980px;margin:20px auto}table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #ddd}input{padding:8px;margin:4px;width:100%}</style>
+</head>
+<body>
+  <h1>LinkPulse</h1>
+  <form hx-post="/links" hx-target="#create-result" hx-swap="innerHTML">
+    <input name="long_url" placeholder="https://example.com/page" required />
+    <input name="custom_alias" placeholder="custom alias (optional)" />
+    <input name="expires_at" placeholder="expiration RFC3339, e.g. 2026-01-02T15:04:05Z" />
+    <input type="password" name="password" placeholder="password (optional)" />
+    <button type="submit">Create Link</button>
+  </form>
+  <div id="create-result"></div>
+
+  <h2>Links</h2>
+  <table>
+    <thead><tr><th>Code</th><th>URL</th><th>Protected</th><th>Expires</th></tr></thead>
+    <tbody>
+      {{ range .Links }}
+      <tr>
+        <td><a href="/links/{{ .ShortCode }}">{{ .ShortCode }}</a></td>
+        <td>{{ .LongURL }}</td>
+        <td>{{ if .PasswordHash }}Yes{{ else }}No{{ end }}</td>
+        <td>{{ if .ExpiresAt }}{{ .ExpiresAt }}{{ else }}Never{{ end }}</td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+</body>
+</html>
