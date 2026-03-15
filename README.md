@@ -10,6 +10,7 @@ LinkPulse demonstrates clean layered architecture, practical backend design, asy
 
 - [Overview](#overview)
 - [Feature Set](#feature-set)
+- [Screenshots](#screenshots)
 - [Architecture](#architecture)
 - [Project Structure](#project-structure)
 - [Services in This Repository](#services-in-this-repository)
@@ -39,6 +40,19 @@ LinkPulse is a URL shortener that supports:
 - A responsive dashboard for link management and analytics.
 
 The current implementation is intentionally self-contained and uses in-memory storage adapters for easy local execution.
+
+---
+
+## Screenshots
+
+### Dashboard
+![Dashboard](browser:/tmp/codex_browser_invocations/967db0ec496394f0/artifacts/docs/screenshots/dashboard.png)
+
+### Analytics Details
+![Analytics Details](browser:/tmp/codex_browser_invocations/df81161a4f26ea0f/artifacts/artifacts/details.png)
+
+### Password Protected Link
+![Password Page](browser:/tmp/codex_browser_invocations/7b818329f01e3503/artifacts/artifacts/password.png)
 
 ---
 
