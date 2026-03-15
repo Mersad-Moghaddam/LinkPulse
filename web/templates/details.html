@@ -1,0 +1,22 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/><title>Link Detail</title></head>
+<body>
+  <h1>Analytics for {{ .ShortCode }}</h1>
+  <div>Total Clicks: <strong id="total">{{ .TotalClicks }}</strong></div>
+  <div>Unique Clicks: <strong>{{ .UniqueClicks }}</strong></div>
+  <h3>Top Referrers</h3>
+  <ul>{{ range $k, $v := .TopReferrers }}<li>{{ $k }}: {{ $v }}</li>{{ end }}</ul>
+  <h3>Live Feed (SSE)</h3>
+  <ul id="feed"></ul>
+  <script>
+    const stream = new EventSource(`/stream/{{ .ShortCode }}`)
+    stream.onmessage = (evt) => {
+      const data = JSON.parse(evt.data)
+      const li = document.createElement('li')
+      li.textContent = `${data.clicked_at} - ${data.browser} from ${data.referrer || 'direct'}`
+      document.getElementById('feed').prepend(li)
+      const totalEl = document.getElementById('total')
+      totalEl.textContent = Number(totalEl.textContent) + 1
+    }
+  </script>
+</body></html>
