@@ -1,0 +1,10 @@
+{
+  "title": "LinkPulse Overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "panels": [
+    {"type": "timeseries", "title": "HTTP Request Rate", "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}, "targets": [{"expr": "rate(linkpulse_http_requests_total[1m])"}]},
+    {"type": "stat", "title": "Total Clicks", "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0}, "targets": [{"expr": "linkpulse_clicks_total"}]},
+    {"type": "stat", "title": "Active WebSockets", "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}, "targets": [{"expr": "linkpulse_ws_connections"}]}
+  ]
+}
