@@ -1,0 +1,23 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="900" fill="#eef3fb"/>
+  <rect x="50" y="40" width="1300" height="820" rx="18" fill="#fff" stroke="#d9e2ef"/>
+  <text x="100" y="100" font-size="44" font-family="Arial" fill="#0f172a" font-weight="700">LinkPulse Dashboard</text>
+  <text x="100" y="140" font-size="22" font-family="Arial" fill="#475569">Create links, set aliases/passwords, and monitor link inventory.</text>
+  <rect x="100" y="190" width="760" height="350" rx="14" fill="#f8fafc" stroke="#dbe4f0"/>
+  <text x="130" y="235" font-size="26" font-family="Arial" fill="#1e293b" font-weight="600">Create New Short Link</text>
+  <rect x="130" y="260" width="700" height="56" rx="10" fill="#fff" stroke="#cbd5e1"/>
+  <rect x="130" y="335" width="700" height="56" rx="10" fill="#fff" stroke="#cbd5e1"/>
+  <rect x="130" y="410" width="700" height="56" rx="10" fill="#fff" stroke="#cbd5e1"/>
+  <rect x="130" y="485" width="180" height="42" rx="10" fill="#2563eb"/>
+  <text x="220" y="513" text-anchor="middle" font-size="20" font-family="Arial" fill="#fff" font-weight="700">Create Link</text>
+  <rect x="890" y="190" width="410" height="350" rx="14" fill="#f8fafc" stroke="#dbe4f0"/>
+  <text x="920" y="235" font-size="26" font-family="Arial" fill="#1e293b" font-weight="600">Quick Stats</text>
+  <text x="920" y="290" font-size="20" font-family="Arial" fill="#475569">Total Links</text>
+  <text x="920" y="330" font-size="48" font-family="Arial" fill="#0f172a" font-weight="700">12</text>
+  <rect x="100" y="570" width="1200" height="250" rx="14" fill="#f8fafc" stroke="#dbe4f0"/>
+  <text x="130" y="615" font-size="26" font-family="Arial" fill="#1e293b" font-weight="600">Short Links</text>
+  <text x="130" y="660" font-size="18" font-family="Arial" fill="#64748b">CODE</text>
+  <text x="380" y="660" font-size="18" font-family="Arial" fill="#64748b">DESTINATION</text>
+  <text x="780" y="660" font-size="18" font-family="Arial" fill="#64748b">PROTECTION</text>
+  <text x="1060" y="660" font-size="18" font-family="Arial" fill="#64748b">EXPIRES</text>
+</svg>

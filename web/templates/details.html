@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LinkPulse Analytics</title>
+  <style>
+    :root {
+      --bg: #f8fafc; --surface:#fff; --line:#e2e8f0; --text:#0f172a; --muted:#64748b; --brand:#2563eb;
+      --shadow: 0 10px 30px rgba(15,23,42,.08); --radius:14px;
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:var(--bg); color:var(--text); }
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 18px; }
+    .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; gap:8px; }
+    .title { margin:0; font-size:1.5rem; letter-spacing:-.02em; }
+    .back { color:var(--brand); text-decoration:none; font-weight:600; }
+    .grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; margin-bottom:14px; }
+    .card { background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px; }
+    .label { color:var(--muted); font-size:.82rem; text-transform:uppercase; letter-spacing:.05em; }
+    .metric { font-size:1.6rem; font-weight:800; margin-top:4px; }
+    .section { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    h3 { margin:0 0 8px; font-size:1rem; }
+    ul { margin:0; padding-left:18px; }
+    li { margin: 6px 0; color:#334155; }
+    .feed { list-style:none; padding:0; max-height:330px; overflow:auto; }
+    .feed li { border:1px solid var(--line); border-radius:10px; padding:10px; background:#fff; margin-bottom:8px; }
+    .muted { color:var(--muted); font-size:.85rem; }
+    @media (max-width:900px){ .grid{grid-template-columns:1fr} .section{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">Analytics · <code>{{ .ShortCode }}</code></h1>
+      <a class="back" href="/">← Back to Dashboard</a>
+    </div>
+
+    <div class="grid">
+      <div class="card"><div class="label">Total Clicks</div><div class="metric" id="total">{{ .TotalClicks }}</div></div>
+      <div class="card"><div class="label">Unique Clicks</div><div class="metric">{{ .UniqueClicks }}</div></div>
+      <div class="card"><div class="label">Live Stream</div><div class="metric">Active</div></div>
+    </div>
+
+    <div class="section">
+      <section class="card">
+        <h3>Top Referrers</h3>
+        <ul>
+          {{ range $k, $v := .TopReferrers }}<li><strong>{{ $k }}</strong> <span class="muted">({{ $v }} clicks)</span></li>{{ end }}
+        </ul>
+      </section>
+
+      <section class="card">
+        <h3>Top Browsers</h3>
+        <ul>
+          {{ range $k, $v := .TopBrowsers }}<li><strong>{{ $k }}</strong> <span class="muted">({{ $v }} clicks)</span></li>{{ end }}
+        </ul>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:14px">
+      <h3>Live Click Feed</h3>
+      <p class="muted" style="margin:0 0 12px">New clicks will appear here in real-time.</p>
+      <ul id="feed" class="feed"></ul>
+    </section>
+  </div>
+
+  <script>
+    const stream = new EventSource(`/stream/{{ .ShortCode }}`)
+    stream.onmessage = (evt) => {
+      const data = JSON.parse(evt.data)
+      const li = document.createElement('li')
+      li.innerHTML = `<div><strong>${data.browser || 'Unknown browser'}</strong></div><div class="muted">${data.clicked_at} · ${data.referrer || 'direct'}</div>`
+      document.getElementById('feed').prepend(li)
+      const totalEl = document.getElementById('total')
+      totalEl.textContent = Number(totalEl.textContent) + 1
+    }
+  </script>
+</body>
+</html>

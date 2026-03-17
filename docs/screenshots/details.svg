@@ -1,0 +1,26 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="900" fill="#f8fafc"/>
+  <rect x="50" y="40" width="1300" height="820" rx="18" fill="#fff" stroke="#d9e2ef"/>
+  <text x="100" y="100" font-size="42" font-family="Arial" fill="#0f172a" font-weight="700">Analytics · demo1234</text>
+  <rect x="100" y="150" width="380" height="120" rx="14" fill="#f8fafc" stroke="#dbe4f0"/>
+  <rect x="510" y="150" width="380" height="120" rx="14" fill="#f8fafc" stroke="#dbe4f0"/>
+  <rect x="920" y="150" width="380" height="120" rx="14" fill="#f8fafc" stroke="#dbe4f0"/>
+  <text x="130" y="205" font-size="20" font-family="Arial" fill="#64748b">Total Clicks</text>
+  <text x="130" y="245" font-size="44" font-family="Arial" fill="#0f172a" font-weight="700">128</text>
+  <text x="540" y="205" font-size="20" font-family="Arial" fill="#64748b">Unique Clicks</text>
+  <text x="540" y="245" font-size="44" font-family="Arial" fill="#0f172a" font-weight="700">96</text>
+  <text x="950" y="205" font-size="20" font-family="Arial" fill="#64748b">Live Stream</text>
+  <text x="950" y="245" font-size="44" font-family="Arial" fill="#16a34a" font-weight="700">Active</text>
+  <rect x="100" y="300" width="580" height="230" rx="14" fill="#f8fafc" stroke="#dbe4f0"/>
+  <rect x="720" y="300" width="580" height="230" rx="14" fill="#f8fafc" stroke="#dbe4f0"/>
+  <text x="130" y="345" font-size="26" font-family="Arial" fill="#1e293b" font-weight="600">Top Referrers</text>
+  <text x="130" y="385" font-size="20" font-family="Arial" fill="#334155">google.com (42)</text>
+  <text x="130" y="420" font-size="20" font-family="Arial" fill="#334155">linkedin.com (21)</text>
+  <text x="750" y="345" font-size="26" font-family="Arial" fill="#1e293b" font-weight="600">Top Browsers</text>
+  <text x="750" y="385" font-size="20" font-family="Arial" fill="#334155">chrome (71)</text>
+  <text x="750" y="420" font-size="20" font-family="Arial" fill="#334155">firefox (33)</text>
+  <rect x="100" y="560" width="1200" height="260" rx="14" fill="#f8fafc" stroke="#dbe4f0"/>
+  <text x="130" y="605" font-size="26" font-family="Arial" fill="#1e293b" font-weight="600">Live Click Feed</text>
+  <text x="130" y="645" font-size="18" font-family="Arial" fill="#64748b">2026-03-17T10:00:00Z · chrome from google.com</text>
+  <text x="130" y="680" font-size="18" font-family="Arial" fill="#64748b">2026-03-17T09:59:42Z · firefox from direct</text>
+</svg>
