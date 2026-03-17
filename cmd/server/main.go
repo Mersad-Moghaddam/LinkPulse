@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -40,12 +42,28 @@ func main() {
 	})
 
 	srv := &http.Server{Addr: ":" + cfg.HTTPPort, Handler: mux, ReadTimeout: cfg.ReadTimeout, WriteTimeout: cfg.WriteTimeout}
-	go func() { log.Printf("server started on :%s", cfg.HTTPPort); _ = srv.ListenAndServe() }()
+	ln, err := net.Listen("tcp", srv.Addr)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("server started on :%s", cfg.HTTPPort)
+
+	errCh := make(chan error, 1)
+	go func() {
+		if serveErr := srv.Serve(ln); serveErr != nil && !errors.Is(serveErr, http.ErrServerClosed) {
+			errCh <- serveErr
+		}
+	}()
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
-	<-sig
-	ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
-	defer cancel()
-	_ = srv.Shutdown(ctx)
+
+	select {
+	case <-sig:
+		ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
+		defer cancel()
+		_ = srv.Shutdown(ctx)
+	case serveErr := <-errCh:
+		panic(serveErr)
+	}
 }

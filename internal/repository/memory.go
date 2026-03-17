@@ -60,6 +60,8 @@ func (m *MemoryRepo) DeleteByCode(_ context.Context, code string) error {
 		return ErrNotFound
 	}
 	delete(m.links, code)
+	delete(m.clicks, code)
+	delete(m.visited, code)
 	return nil
 }
 

@@ -70,8 +70,20 @@
     stream.onmessage = (evt) => {
       const data = JSON.parse(evt.data)
       const li = document.createElement('li')
-      li.innerHTML = `<div><strong>${data.browser || 'Unknown browser'}</strong></div><div class="muted">${data.clicked_at} · ${data.referrer || 'direct'}</div>`
+
+      const top = document.createElement('div')
+      const strong = document.createElement('strong')
+      strong.textContent = data.browser || 'Unknown browser'
+      top.appendChild(strong)
+
+      const meta = document.createElement('div')
+      meta.className = 'muted'
+      meta.textContent = `${data.clicked_at || ''} · ${data.referrer || 'direct'}`
+
+      li.appendChild(top)
+      li.appendChild(meta)
       document.getElementById('feed').prepend(li)
+
       const totalEl = document.getElementById('total')
       totalEl.textContent = Number(totalEl.textContent) + 1
     }
