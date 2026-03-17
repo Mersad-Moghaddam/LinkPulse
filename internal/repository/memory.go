@@ -69,6 +69,9 @@ func (m *MemoryRepo) Record(_ context.Context, click models.Click) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	code := click.LinkID
+	if _, ok := m.links[code]; !ok {
+		return ErrNotFound
+	}
 	if _, ok := m.visited[code]; !ok {
 		m.visited[code] = map[string]struct{}{}
 	}

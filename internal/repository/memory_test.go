@@ -40,3 +40,11 @@ func TestDeleteByCodeClearsAnalyticsState(t *testing.T) {
 		t.Fatalf("expected unique count reset after delete/recreate, got %d", s.UniqueClicks)
 	}
 }
+
+func TestRecordRejectsUnknownCode(t *testing.T) {
+	repo := NewMemoryRepo()
+	err := repo.Record(context.Background(), models.Click{LinkID: "missing", IP: "1.1.1.1", UserAgent: "ua"})
+	if err != ErrNotFound {
+		t.Fatalf("expected ErrNotFound, got %v", err)
+	}
+}

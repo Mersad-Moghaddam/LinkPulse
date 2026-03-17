@@ -42,8 +42,12 @@ func NewLinkService(links repository.LinkRepository, clicks repository.ClickRepo
 }
 
 func (s *LinkService) Create(ctx context.Context, in models.CreateLinkInput) (models.Link, string, error) {
-	if _, err := url.ParseRequestURI(in.LongURL); err != nil {
+	parsed, err := url.ParseRequestURI(in.LongURL)
+	if err != nil || parsed.Host == "" || parsed.Hostname() == "" {
 		return models.Link{}, "", errors.New("invalid long URL")
+	}
+	if parsed.Scheme != "http" && parsed.Scheme != "https" {
+		return models.Link{}, "", errors.New("long URL must use http or https")
 	}
 	if in.ExpiresAt != nil && in.ExpiresAt.Before(time.Now()) {
 		return models.Link{}, "", errors.New("expiration must be in future")

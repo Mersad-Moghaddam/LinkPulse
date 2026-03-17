@@ -2,8 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"html/template"
 	"net/http"
+	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -20,11 +25,35 @@ type Handler struct {
 }
 
 func New(svc *service.LinkService, hub *ws.Hub) (*Handler, error) {
-	t, err := template.ParseGlob("web/templates/*.html")
+	t, err := parseTemplates()
 	if err != nil {
 		return nil, err
 	}
 	return &Handler{svc: svc, tmpl: t, hub: hub}, nil
+}
+
+func parseTemplates() (*template.Template, error) {
+	cwd, _ := os.Getwd()
+	exe, _ := os.Executable()
+	exeDir := filepath.Dir(exe)
+	_, srcFile, _, _ := runtime.Caller(0)
+	srcDir := filepath.Dir(srcFile)
+	patterns := []string{
+		filepath.Join(cwd, "web", "templates", "*.html"),
+		filepath.Join(exeDir, "web", "templates", "*.html"),
+		filepath.Join(exeDir, "..", "web", "templates", "*.html"),
+		filepath.Join(srcDir, "..", "..", "..", "web", "templates", "*.html"),
+	}
+
+	var errs []error
+	for _, pattern := range patterns {
+		t, err := template.ParseGlob(pattern)
+		if err == nil {
+			return t, nil
+		}
+		errs = append(errs, fmt.Errorf("%s: %w", pattern, err))
+	}
+	return nil, errors.Join(errs...)
 }
 
 func (h *Handler) Routes() http.Handler {
@@ -48,7 +77,11 @@ func (h *Handler) Dashboard(w http.ResponseWriter, r *http.Request) {
 	_ = h.tmpl.ExecuteTemplate(w, "dashboard.html", map[string]any{"Links": links})
 }
 func (h *Handler) LinkDetails(w http.ResponseWriter, r *http.Request) {
-	s, _ := h.svc.Summary(r.Context(), codeFrom(r.URL.Path, "/links/"))
+	s, err := h.svc.Summary(r.Context(), codeFrom(r.URL.Path, "/links/"))
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
 	_ = h.tmpl.ExecuteTemplate(w, "details.html", s)
 }
 

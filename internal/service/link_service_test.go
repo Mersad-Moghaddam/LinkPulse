@@ -32,6 +32,19 @@ func TestCreateAndResolve(t *testing.T) {
 	}
 }
 
+func TestCreateRejectsNonHTTPAndMissingHost(t *testing.T) {
+	svc := newSvc()
+	cases := []models.CreateLinkInput{
+		{LongURL: "javascript:alert(1)", CustomAlias: "aliasj1"},
+		{LongURL: "http://", CustomAlias: "aliash1"},
+	}
+	for _, tc := range cases {
+		if _, _, err := svc.Create(context.Background(), tc); err == nil {
+			t.Fatalf("expected error for long url %q", tc.LongURL)
+		}
+	}
+}
+
 func TestValidatePassword(t *testing.T) {
 	svc := newSvc()
 	l, _, err := svc.Create(context.Background(), models.CreateLinkInput{LongURL: "https://example.com", CustomAlias: "alias2", Password: "topsecret"})
