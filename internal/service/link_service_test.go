@@ -14,7 +14,7 @@ import (
 
 func newSvc() *LinkService {
 	repo := repository.NewMemoryRepo()
-	return NewLinkService(repo, repo, cache.NewMemory(), ws.NewHub(), "http://localhost:8080")
+	return NewLinkService(repo, repo, cache.NewMemory(), ws.NewHub(), "http://localhost:8080", "test-cookie-secret")
 }
 
 func TestCreateAndResolve(t *testing.T) {
@@ -56,5 +56,37 @@ func TestTrackClickAsync(t *testing.T) {
 	s, err := svc.Summary(context.Background(), "alias3")
 	if err != nil || s.TotalClicks == 0 {
 		t.Fatal("expected click tracked")
+	}
+}
+
+func TestDeleteInvalidatesCache(t *testing.T) {
+	svc := newSvc()
+	_, _, err := svc.Create(context.Background(), models.CreateLinkInput{LongURL: "https://example.com", CustomAlias: "alias4"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := svc.Delete(context.Background(), "alias4"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := svc.Resolve(context.Background(), "alias4"); err == nil {
+		t.Fatal("expected deleted link to be unresolved")
+	}
+}
+
+func TestAccessTokenValidation(t *testing.T) {
+	svc := newSvc()
+	l, _, err := svc.Create(context.Background(), models.CreateLinkInput{LongURL: "https://example.com", CustomAlias: "alias5", Password: "secret"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	token := svc.AccessToken(l)
+	if token == "" {
+		t.Fatal("expected signed token")
+	}
+	if !svc.ValidateAccessToken(l, token) {
+		t.Fatal("expected token validation success")
+	}
+	if svc.ValidateAccessToken(l, "ok") {
+		t.Fatal("forged cookie value must not pass")
 	}
 }

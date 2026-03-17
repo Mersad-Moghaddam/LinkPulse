@@ -8,6 +8,7 @@ import (
 type Config struct {
 	HTTPPort        string
 	BaseURL         string
+	AccessCookieKey string
 	ShutdownTimeout time.Duration
 	ReadTimeout     time.Duration
 	WriteTimeout    time.Duration
@@ -17,6 +18,7 @@ func Load() (Config, error) {
 	cfg := Config{
 		HTTPPort:        get("HTTP_PORT", "8080"),
 		BaseURL:         get("BASE_URL", "http://localhost:8080"),
+		AccessCookieKey: get("ACCESS_COOKIE_KEY", "linkpulse-dev-cookie-secret"),
 		ShutdownTimeout: 10 * time.Second,
 		ReadTimeout:     5 * time.Second,
 		WriteTimeout:    10 * time.Second,

@@ -40,4 +40,10 @@ func (m *MemoryCache) SetLink(_ context.Context, link models.Link) {
 	m.links[link.ShortCode] = entry{link: link, expires: exp}
 }
 
+func (m *MemoryCache) DeleteLink(_ context.Context, code string) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	delete(m.links, code)
+}
+
 func (m *MemoryCache) IncrCounters(context.Context, string) {}

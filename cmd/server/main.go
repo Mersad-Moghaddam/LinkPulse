@@ -27,7 +27,7 @@ func main() {
 	log := logger.New()
 	repo := repository.NewMemoryRepo()
 	hub := ws.NewHub()
-	svc := service.NewLinkService(repo, repo, cache.NewMemory(), hub, cfg.BaseURL)
+	svc := service.NewLinkService(repo, repo, cache.NewMemory(), hub, cfg.BaseURL, cfg.AccessCookieKey)
 	h, err := handlers.New(svc, hub)
 	if err != nil {
 		panic(err)

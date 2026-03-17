@@ -61,20 +61,12 @@ func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	_, short, err := h.svc.Create(r.Context(), models.CreateLinkInput{LongURL: r.FormValue("long_url"), CustomAlias: r.FormValue("custom_alias"), ExpiresAt: exp, Password: r.FormValue("password")})
-<<<<<<< codex/develop-advanced-url-shortener-service-8k05e0
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err != nil {
 		_, _ = w.Write([]byte("<div class='result-message error'>Unable to create short link: " + template.HTMLEscapeString(err.Error()) + "</div>"))
 		return
 	}
 	_, _ = w.Write([]byte("<div class='result-message success'>Created: <a href='" + short + "' target='_blank' rel='noopener'>" + short + "</a></div>"))
-=======
-	if err != nil {
-		http.Error(w, err.Error(), 400)
-		return
-	}
-	_, _ = w.Write([]byte("<div>Created: <a href='" + short + "'>" + short + "</a></div>"))
->>>>>>> main
 }
 
 func (h *Handler) CreateLink(w http.ResponseWriter, r *http.Request) {
@@ -143,7 +135,8 @@ func (h *Handler) Redirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if link.PasswordHash != nil {
-		if c, _ := r.Cookie("lp_access_" + code); c == nil || c.Value != "ok" {
+		c, _ := r.Cookie("lp_access_" + code)
+		if c == nil || !h.svc.ValidateAccessToken(link, c.Value) {
 			_ = h.tmpl.ExecuteTemplate(w, "password.html", map[string]any{"Code": code})
 			return
 		}
@@ -163,7 +156,7 @@ func (h *Handler) PasswordSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid password", 401)
 		return
 	}
-	http.SetCookie(w, &http.Cookie{Name: "lp_access_" + code, Value: "ok", Path: "/", HttpOnly: true, MaxAge: 86400})
+	http.SetCookie(w, &http.Cookie{Name: "lp_access_" + code, Value: h.svc.AccessToken(link), Path: "/", HttpOnly: true, MaxAge: 86400, SameSite: http.SameSiteLaxMode})
 	http.Redirect(w, r, "/"+code, http.StatusFound)
 }
 

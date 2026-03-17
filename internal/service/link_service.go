@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
@@ -25,15 +26,19 @@ import (
 var aliasRegex = regexp.MustCompile(`^[a-zA-Z0-9_-]{4,20}$`)
 
 type LinkService struct {
-	links  repository.LinkRepository
-	clicks repository.ClickRepository
-	cache  *cache.MemoryCache
-	hub    *ws.Hub
-	base   string
+	links        repository.LinkRepository
+	clicks       repository.ClickRepository
+	cache        *cache.MemoryCache
+	hub          *ws.Hub
+	base         string
+	cookieSecret []byte
 }
 
-func NewLinkService(links repository.LinkRepository, clicks repository.ClickRepository, cache *cache.MemoryCache, hub *ws.Hub, baseURL string) *LinkService {
-	return &LinkService{links: links, clicks: clicks, cache: cache, hub: hub, base: strings.TrimRight(baseURL, "/")}
+func NewLinkService(links repository.LinkRepository, clicks repository.ClickRepository, cache *cache.MemoryCache, hub *ws.Hub, baseURL string, cookieSecret string) *LinkService {
+	if cookieSecret == "" {
+		cookieSecret = "linkpulse-dev-cookie-secret"
+	}
+	return &LinkService{links: links, clicks: clicks, cache: cache, hub: hub, base: strings.TrimRight(baseURL, "/"), cookieSecret: []byte(cookieSecret)}
 }
 
 func (s *LinkService) Create(ctx context.Context, in models.CreateLinkInput) (models.Link, string, error) {
@@ -105,10 +110,31 @@ func (s *LinkService) TrackClickAsync(link models.Link, r *http.Request) {
 
 func (s *LinkService) List(ctx context.Context) ([]models.Link, error) { return s.links.List(ctx) }
 func (s *LinkService) Delete(ctx context.Context, code string) error {
-	return s.links.DeleteByCode(ctx, code)
+	if err := s.links.DeleteByCode(ctx, code); err != nil {
+		return err
+	}
+	s.cache.DeleteLink(ctx, code)
+	return nil
 }
 func (s *LinkService) Summary(ctx context.Context, code string) (models.AnalyticsSummary, error) {
 	return s.clicks.SummaryByCode(ctx, code)
+}
+
+func (s *LinkService) AccessToken(link models.Link) string {
+	if link.PasswordHash == nil {
+		return ""
+	}
+	mac := hmac.New(sha256.New, s.cookieSecret)
+	_, _ = mac.Write([]byte(link.ShortCode + "|" + *link.PasswordHash))
+	return base64.RawURLEncoding.EncodeToString(mac.Sum(nil))
+}
+
+func (s *LinkService) ValidateAccessToken(link models.Link, token string) bool {
+	if link.PasswordHash == nil || token == "" {
+		return false
+	}
+	expected := s.AccessToken(link)
+	return hmac.Equal([]byte(token), []byte(expected))
 }
 
 func randomCode(length int) string {
