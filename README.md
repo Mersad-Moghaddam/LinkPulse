@@ -46,13 +46,13 @@ The current implementation is intentionally self-contained and uses in-memory st
 ## Screenshots
 
 ### Dashboard
-![Dashboard](browser:/tmp/codex_browser_invocations/967db0ec496394f0/artifacts/docs/screenshots/dashboard.png)
+![Dashboard](docs/screenshots/dashboard.svg)
 
 ### Analytics Details
-![Analytics Details](browser:/tmp/codex_browser_invocations/df81161a4f26ea0f/artifacts/artifacts/details.png)
+![Analytics Details](docs/screenshots/details.svg)
 
 ### Password Protected Link
-![Password Page](browser:/tmp/codex_browser_invocations/7b818329f01e3503/artifacts/artifacts/password.png)
+![Password Page](docs/screenshots/password.svg)
 
 ---
 
