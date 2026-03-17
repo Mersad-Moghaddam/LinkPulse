@@ -61,11 +61,20 @@ func (h *Handler) CreateForm(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	_, short, err := h.svc.Create(r.Context(), models.CreateLinkInput{LongURL: r.FormValue("long_url"), CustomAlias: r.FormValue("custom_alias"), ExpiresAt: exp, Password: r.FormValue("password")})
+<<<<<<< codex/develop-advanced-url-shortener-service-8k05e0
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err != nil {
+		_, _ = w.Write([]byte("<div class='result-message error'>Unable to create short link: " + template.HTMLEscapeString(err.Error()) + "</div>"))
+		return
+	}
+	_, _ = w.Write([]byte("<div class='result-message success'>Created: <a href='" + short + "' target='_blank' rel='noopener'>" + short + "</a></div>"))
+=======
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 		return
 	}
 	_, _ = w.Write([]byte("<div>Created: <a href='" + short + "'>" + short + "</a></div>"))
+>>>>>>> main
 }
 
 func (h *Handler) CreateLink(w http.ResponseWriter, r *http.Request) {

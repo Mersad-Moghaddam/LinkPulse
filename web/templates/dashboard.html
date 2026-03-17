@@ -58,8 +58,23 @@
     }
     .ghost { background: #f1f5f9; color: #0f172a; }
     .result {
-      margin-top: 12px; border: 1px dashed #93c5fd; background: #eff6ff; color: #1e3a8a;
-      padding: 10px 12px; border-radius: 10px;
+      margin-top: 12px;
+      min-height: 24px;
+    }
+    .result-message {
+      border-radius: 10px;
+      padding: 10px 12px;
+      border: 1px solid transparent;
+    }
+    .result-message.success {
+      border-color: #93c5fd;
+      background: #eff6ff;
+      color: #1e3a8a;
+    }
+    .result-message.error {
+      border-color: #fecaca;
+      background: #fef2f2;
+      color: #991b1b;
     }
     table { width: 100%; border-collapse: collapse; font-size: 0.94rem; }
     th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -115,7 +130,7 @@
             <button type="button" class="ghost" @click="reset()">Clear</button>
           </div>
         </form>
-        <div id="create-result" class="result" style="display:none"></div>
+        <div id="create-result" class="result" aria-live="polite"></div>
       </section>
 
       <section class="card">
@@ -158,13 +173,6 @@
       </table>
     </section>
   </div>
-  <script>
-    document.body.addEventListener('htmx:afterRequest', (e) => {
-      if (e.detail.pathInfo.requestPath === '/links') {
-        const el = document.getElementById('create-result')
-        el.style.display = 'block'
-      }
-    })
-  </script>
+  
 </body>
 </html>
